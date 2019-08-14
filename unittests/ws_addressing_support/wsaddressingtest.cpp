@@ -53,9 +53,12 @@ private Q_SLOTS:
 
         QString unspecified = KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::Unspecified);
         QCOMPARE(unspecified, QString("http://www.w3.org/2005/08/addressing/unspecified"));
-        
+
         QString none200303 = KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::None, KDSoapMessageAddressingProperties::Addressing200303);
-        QCOMPARE(none200303, QString("http://schemas.xmlsoap.org/ws/2003/03/addressing/none"));
+        QCOMPARE(none200303, QString(""));
+
+        QString anon200303 = KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::Anonymous, KDSoapMessageAddressingProperties::Addressing200303);
+        QCOMPARE(anon200303, QString("http://schemas.xmlsoap.org/ws/2003/03/addressing/role/anonymous"));
     }
 
     void shouldWriteAProperSoapMessageWithRightsAddressingProperties()

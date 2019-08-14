@@ -217,16 +217,34 @@ KDSoapMessageAddressingProperties::~KDSoapMessageAddressingProperties()
 
 QString KDSoapMessageAddressingProperties::predefinedAddressToString(KDSoapMessageAddressingProperties::KDSoapAddressingPredefinedAddress address, KDSoapAddressingNamespace addressingNamespace)
 {
-    const QString addressingNS = addressingNamespaceToString(addressingNamespace);
+    QString prefix = addressingNamespaceToString(addressingNamespace);
+    // Up to and including the 2004/08 spec the well-known URIs have a /role/
+    // folder in their path and furthermore only /anonymous is actually
+    // well-known.
+    switch (addressingNamespace) {
+    case Addressing200303:
+    case Addressing200403:
+    case Addressing200408: {
+        prefix += QLatin1String("/role");
+        if (!address == Anonymous) {
+            qWarning("Anything but Anonymous has no meaning in ws-addressing 2004/08");
+            return QString();
+        }
+        break;
+    }
+    default:
+        break;
+    }
+
     switch (address) {
     case Anonymous:
-        return addressingNS + QLatin1String("/anonymous");
+        return prefix + QLatin1String("/anonymous");
     case None:
-        return addressingNS + QLatin1String("/none");
+        return prefix + QLatin1String("/none");
     case Reply:
-        return addressingNS + QLatin1String("/reply");
+        return prefix + QLatin1String("/reply");
     case Unspecified:
-        return addressingNS + QLatin1String("/unspecified");
+        return prefix + QLatin1String("/unspecified");
     default:
         Q_ASSERT(false); // should never happen
         return QString();
